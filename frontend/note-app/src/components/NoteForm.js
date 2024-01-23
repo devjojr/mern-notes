@@ -31,7 +31,7 @@ const NoteForm = () => {
       const json = await response.json();
 
       if (!response.ok) {
-        throw new Error(`Error adding note: ${response.statusText}`);
+        throw new Error("Error adding note");
       }
 
       if (response.ok) {
@@ -87,6 +87,7 @@ const NoteForm = () => {
           </button>
         </div>
       </div>
+      {error && <div className="notification is-danger">{error}</div>}
     </form>
   );
 };

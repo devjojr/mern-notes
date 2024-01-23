@@ -32,7 +32,7 @@ const UpdateNoteForm = ({ note, onClose }) => {
       const json = await response.json();
 
       if (!response.ok) {
-        throw new Error(`Failed to update note: ${response.statusText}`);
+        throw new Error("Failed to update note");
       }
 
       if (response.ok) {
