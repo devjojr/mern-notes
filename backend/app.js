@@ -8,6 +8,9 @@ const xss = require("xss-clean");
 const express = require("express");
 const app = express();
 
+const path = require("path");
+app.use(express.static(path.join(__dirname, "build")));
+
 // connect to database
 const connectDB = require("./db/connect");
 const authenticateUser = require("./middleware/authentication");
