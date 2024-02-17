@@ -1,5 +1,5 @@
 {
-  "proxy": "http://localhost:4000",
+  "proxy": "https://notes-dev-prod.onrender.com",
   "name": "note-app",
   "version": "0.1.0",
   "private": true,
