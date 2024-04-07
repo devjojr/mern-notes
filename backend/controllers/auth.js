@@ -3,7 +3,7 @@ const validator = require("validator");
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, UnauthenticatedError } = require("../errors");
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
   try {
     const user = await User.create({ ...req.body });
     const token = user.createJWT();
@@ -13,11 +13,11 @@ const signup = async (req, res) => {
       token,
     });
   } catch (error) {
-    throw new BadRequestError("Invalid input values");
+    next(error);
   }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -45,7 +45,7 @@ const login = async (req, res) => {
       token,
     });
   } catch (error) {
-    throw new BadRequestError("Invalid credentials");
+    next(error)
   }
 };
 

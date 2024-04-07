@@ -7,7 +7,7 @@ const { BadRequestError, CreateError } = require("../errors");
 const userSchema = new mongoose.Schema({
   userName: {
     type: String,
-    required: [true, "Please provide your first name"],
+    required: [true, "Please provide your username"],
     minlength: 3,
     maxlength: 50,
   },
@@ -27,16 +27,16 @@ const userSchema = new mongoose.Schema({
 });
 
 // Index for email field to enforce uniqueness
-userSchema.index({ email: 1 }, { unique: true });
+// userSchema.index({ email: 1 }, { unique: true });
 
-userSchema.pre("save", async function () {
+userSchema.pre("save", async function (next) {
   try {
     if (!validator.isAlphanumeric(this.userName)) {
-      throw new BadRequestError("Invalid user name");
+      throw new BadRequestError("Username must be alphanumeric");
     }
 
     if (!validator.isEmail(this.email)) {
-      throw new BadRequestError("Invalid email");
+      throw new BadRequestError("Please provide a valid email");
     }
 
     // Checking email uniqueness using a unique index in the database
@@ -49,13 +49,15 @@ userSchema.pre("save", async function () {
 
     // Checking customized password strength
     if (!isPasswordStrongEnough(this.password)) {
-      throw new BadRequestError("Invalid password");
+      throw new BadRequestError(
+        "Password must be at least 8 characters long and contain at least one digit, one lowercase letter, and one uppercase letter"
+      );
     }
 
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   } catch (error) {
-    throw new BadRequestError("Error creating user");
+    next(error)
   }
 });
 

@@ -5,24 +5,23 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     msg: err.message || "Something went wrong, try again later.",
   };
 
-  if (err.userName === "ValidationError") {
+  if (err.name === "ValidationError") {
     customError.msg = Object.values(err.errors)
       .map((item) => item.message)
       .join(", ");
-    customError.statusCode = 400;
+    customError.statusCode = StatusCodes.BAD_REQUEST;
   }
 
   if (err.code && err.code === 11000) {
-    console.log(err);
     customError.msg = `Duplicate value entered for ${Object.keys(
       err.keyValue
     )} field, please choose another value`;
-    customError.statusCode = 400;
+    customError.statusCode = StatusCodes.BAD_REQUEST;
   }
 
-  if (err.userName === "CastError") {
-    customError.msg = `No item found with id : ${err.value}`;
-    customError.statusCode = 404;
+  if (err.name === "CastError") {
+    customError.msg = "Note not found";
+    customError.statusCode = StatusCodes.NOT_FOUND;
   }
 
   return res.status(customError.statusCode).json({ msg: customError.msg });
